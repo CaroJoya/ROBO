@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>RoboForge-New User</title>
+    </head>
+    <body>
+        <!-- Change the form tag in register.html -->
+<form id="registerForm">
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br>
+    
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username" required><br>
+    
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br>
+    
+    <label for="confirmPassword">Confirm Password:</label><br>
+    <input type="password" id="confirmPassword" name="confirmPassword" required><br>
+    
+    <input type="submit" value="Register">
+  </form>
+  
+  <!-- Add this script -->
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        email: document.getElementById('email').value,
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+      };
+      
+      if (formData.password !== formData.confirmPassword) {
+        alert('❌ Passwords do not match!');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('🎉 Registration successful!');
+          localStorage.setItem('token', result.token);
+          window.location.href = '/login.html';
+        } else {
+          alert('❌ ' + result.error);
+        }
+      } catch (error) {
+        alert('❌ Connection error: ' + error.message);
+      }
+    });
+  </script>s
+    </body>
+</html>

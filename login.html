@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>RoboForge-Login</title>
+    </head>
+    <body>
+        <!-- Change the form tag in login.html -->
+<form action="/api/auth/login" method="POST">
+    <!-- Keep everything else the same, but fix input names -->
+    <label for="identifier">Email or Username:</label><br>
+    <input type="text" id="identifier" name="identifier" required><br>
+    
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br>
+    
+    <input type="submit" value="Login">
+  </form>
+  
+  <!-- Add this script at the end of body -->
+  <script>
+    // Simple form handling
+    document.querySelector('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        identifier: document.getElementById('identifier').value,
+        password: document.getElementById('password').value
+      };
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('✅ Login successful! Token: ' + result.token.substring(0, 30) + '...');
+          // Save token to localStorage
+          localStorage.setItem('token', result.token);
+          // Redirect to welcome page
+          window.location.href = '/welcome.html';
+        } else {
+          alert('❌ ' + result.error);
+        }
+      } catch (error) {
+        alert('❌ Connection error: ' + error.message);
+      }
+    });
+  </script>
+    </body>
+</html>
